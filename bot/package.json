@@ -1,0 +1,25 @@
+{
+  "name": "bot",
+  "version": "1.0.0",
+  "description": "This repository is a hub for examples of how developers can use Cloud API, hosted by Meta, on the [WhatsApp Business Platform](https://business.whatsapp.com/learn-more/).",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fbsamples/whatsapp-api-examples.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fbsamples/whatsapp-api-examples/issues"
+  },
+  "homepage": "https://github.com/fbsamples/whatsapp-api-examples#readme",
+  "dependencies": {
+    "axios": "^1.9.0",
+    "body-parser": "^2.2.0",
+    "express": "^5.1.0"
+  }
+}
