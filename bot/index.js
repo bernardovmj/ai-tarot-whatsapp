@@ -37,6 +37,8 @@ const ACCESS_TOKEN    = process.env.WHATSAPP_TOKEN.trim();
 
 // In-memory session store: last reading per user
 const sessions = new Map();
+// Store detected language per user (so we don’t re-detect each time)
+const userLang = new Map();
 
 // Sample tarot deck
 const tarotDeck = [
@@ -99,12 +101,18 @@ app.post('/webhook', async (req, res) => {
   const text = msg.text?.body?.trim();
   if (!from || !text) return;
 
-  // Language detection
-  const lang = /[áàâãéêíóôõúçñ]/i.test(text)
-    ? 'pt'
-    : /[A-Za-z]/.test(text)
-    ? 'en'
-    : null;
+  // Language detection (accents + Portuguese keywords/greetings)
+  const ptAccent = /[áàâãéêíóôõúçñ]/i;
+  // Portuguese keywords and greetings
+  const ptWords = /\b(eu|você|como|que|estou|sinto|preciso|gostaria|oi|olá|bom dia|boa tarde|tudo bem|tudo|bem|olá)\b/i;
+
+  let lang = userLang.get(from);
+  if (!lang) {
+    if (ptAccent.test(text) || ptWords.test(text)) lang = 'pt';
+    else lang = 'en';
+    userLang.set(from, lang);
+  }
+
   // Dynamic first greeting
   if (!sessions.has(from)) {
     let greet;
@@ -116,6 +124,7 @@ app.post('/webhook', async (req, res) => {
       'INSERT INTO sessions (user, role, content) VALUES (?,?,?)'
     ).run(from, 'assistant', greet);
     sessions.set(from, []);
+    return;
   }
 
   // Persist user turn
